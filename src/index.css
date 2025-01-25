@@ -1,0 +1,45 @@
+@import "tailwindcss/base";
+/* @import "./custom-base-styles.css"; */
+
+@import "tailwindcss/components";
+/* @import "./custom-components.css"; */
+
+@import "tailwindcss/utilities";
+/* @import "./custom-utilities.css"; */
+
+body {
+  background-color: theme("colors.slate.500");
+}
+
+.road {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to bottom, #555, #333);
+  position: relative;
+  overflow: hidden;
+}
+
+.box {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  bottom: 20px;
+  animation: drive 5s linear infinite;
+}
+
+@keyframes drive {
+  0% {
+    left: -60px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.perspective {
+  perspective: 1000px;
+}
+
+.transform {
+  transform-style: preserve-3d;
+}
