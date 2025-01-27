@@ -1,4 +1,6 @@
 import React, { useRef, useEffect } from "react";
+import BoxColors from "../box/utils/BoxColors.utils";
+import TrasportationColors from "./utils/TransportationColors.util";
 
 interface Item {
   x: number;
@@ -22,7 +24,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "blue",
+      color: BoxColors[0],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -34,7 +36,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "blue",
+      color: BoxColors[0],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -46,7 +48,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "blue",
+      color: BoxColors[0],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -59,7 +61,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "green",
+      color: BoxColors[1],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -71,7 +73,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "green",
+      color: BoxColors[1],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -83,7 +85,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "green",
+      color: BoxColors[1],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -96,7 +98,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "orange",
+      color: BoxColors[2],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -108,7 +110,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "orange",
+      color: BoxColors[2],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -120,7 +122,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "orange",
+      color: BoxColors[2],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -133,7 +135,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "red",
+      color: BoxColors[3],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -145,7 +147,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "red",
+      color: BoxColors[3],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -157,7 +159,7 @@ const TransportBand: React.FC = () => {
       y: -1,
       width: 20,
       height: 20,
-      color: "red",
+      color: BoxColors[3],
       speed: 1,
       status: "stop",
       orientation: "stop",
@@ -172,28 +174,58 @@ const TransportBand: React.FC = () => {
     const context = canvas?.getContext("2d");
     let animationFrameId: number;
     const roadSections = [
-      { x: 50, y: 40, width: 700, height: 100 }, // Bottom side
-      { x: 50, y: 40, width: 100, height: 450 }, // Left side
-      { x: 650, y: 40, width: 100, height: 450 }, // Right side
-      { x: 50, y: 400, width: 700, height: 100 }, // Top side
+      { x: 50, y: 40, width: 200, height: 100, color: TrasportationColors[0] }, // Bottom side (Top in screen)
+      { x: 50, y: 40, width: 100, height: 450, color: TrasportationColors[0] }, // Left side
+      { x: 200, y: 40, width: 100, height: 450, color: TrasportationColors[0] }, // Left side
+      { x: 355, y: 40, width: 100, height: 450, color: TrasportationColors[0] }, // Left side
+      { x: 650, y: 40, width: 100, height: 450, color: TrasportationColors[0] }, // Right side
+      { x: 50, y: 400, width: 405, height: 100, color: TrasportationColors[0] }, // Top side
+      { x: 355, y: 40, width: 395, height: 100, color: TrasportationColors[0] }, // Top side
       //add additional road sections
     ];
 
     const platforms = [
-      { x: 10, y: 200, width: 40, height: 100, color: "blue", platform: 1 }, // Origin platform
-      { x: 750, y: 400, width: 40, height: 100, color: "green", platform: 2 }, // Destination platform
-      { x: 355, y: 0, width: 100, height: 40, color: "orange", platform: 3 }, // Additional platform
-      { x: 355, y: 500, width: 100, height: 40, color: "red", platform: 4 }, // Additional platform
+      {
+        x: 10,
+        y: 200,
+        width: 40,
+        height: 100,
+        color: BoxColors[0],
+        platform: 1,
+      }, // Origin platform
+      {
+        x: 750,
+        y: 400,
+        width: 40,
+        height: 100,
+        color: BoxColors[1],
+        platform: 2,
+      }, // Destination platform
+      {
+        x: 355,
+        y: 0,
+        width: 100,
+        height: 40,
+        color: BoxColors[2],
+        platform: 3,
+      }, // Additional platform
+      {
+        x: 355,
+        y: 500,
+        width: 100,
+        height: 40,
+        color: BoxColors[3],
+        platform: 4,
+      }, // Additional platform
       // Add more platforms as needed
     ];
 
     if (!canvas || !context) return;
 
     const drawCircuit = () => {
-      context.fillStyle = "gray"; // Road color
-
       // Draw each section of the square circuit
       roadSections.forEach((section) => {
+        context.fillStyle = section.color; // Set the section color
         context.fillRect(section.x, section.y, section.width, section.height);
       });
 
@@ -375,24 +407,6 @@ const TransportBand: React.FC = () => {
       }
     };
 
-    const distanceToNearestSectionInX = (item: Item, platform: any) => {
-      const distancePositive = Math.abs(item.x + item.width - platform.x);
-      const distanceNegative = Math.abs(item.x - platform.x + platform.width);
-
-      return distancePositive < distanceNegative
-        ? distancePositive
-        : distanceNegative;
-    };
-
-    const distanceToNearestSectionInY = (item: Item, platform: any) => {
-      const distancePositive = Math.abs(item.y + item.height - platform.y);
-      const distanceNegative = Math.abs(item.y - platform.y + platform.height);
-
-      return distancePositive < distanceNegative
-        ? distancePositive
-        : distanceNegative;
-    };
-
     const movedToDirection = (item: Item): string => {
       const platform = platforms.find(
         (p) => p.platform === item.platformDestination
@@ -401,47 +415,108 @@ const TransportBand: React.FC = () => {
       if (!platform) return "stop";
 
       if (item.status === "block") {
-        if (
-          (item.orientation === "top" && !validMoveItemOnY(item, "-y")) ||
-          (item.orientation === "bottom" && !validMoveItemOnY(item, "+y"))
-        ) {
-          const searchSections = roadSections.filter(
-            (section) =>
-              item.y - item.height >= section.y &&
-              item.y + item.height <= section.y + section.height - item.height
-          );
-
-          const nearestSection = searchSections.reduce((a, b) => {
-            return distanceToNearestSectionInX(item, b) <
-              distanceToNearestSectionInX(item, a)
-              ? b
-              : a;
-          }, searchSections[0]);
-
-          if (!nearestSection) return "stop";
-
+        if (item.orientation === "top") {
+          // Move aroud X when item is not inside the platform in X axis
           if (
-            item.x + item.width >=
-            nearestSection.x + nearestSection.width - item.width
+            item.x + item.width <= platform.x + item.width &&
+            validMoveItemOnX(item, "+x")
           ) {
-            console.log("item", item);
-
-            return "left";
-          } else if (item.x <= nearestSection.x + nearestSection.width) {
+            item.status = "running";
             return "right";
+          } else if (
+            item.x >= platform.x + platform.width - item.width &&
+            validMoveItemOnX(item, "-x")
+          ) {
+            item.status = "running";
+            return "left";
           }
 
-          console.log("block top");
-        } else if (item.orientation === "top" && validMoveItemOnY(item, "-y")) {
-          item.status = "running";
-          return "top";
-        } else if (
-          item.orientation === "bottom" &&
-          validMoveItemOnY(item, "+y")
-        ) {
-          item.status = "running";
-          return "bottom";
+          if (validMoveItemOnY(item, "+y")) {
+            return "bottom";
+          }
+        } else if (item.orientation === "bottom") {
+          if (
+            item.x + item.width <= platform.x + item.width &&
+            validMoveItemOnX(item, "+x")
+          ) {
+            item.status = "running";
+            return "right";
+          } else if (
+            item.x >= platform.x + platform.width - item.width &&
+            validMoveItemOnX(item, "-x")
+          ) {
+            item.status = "running";
+            return "left";
+          }
+
+          if (validMoveItemOnY(item, "-y")) {
+            return "top";
+          }
+        } else if (item.orientation === "left") {
+          // Move the item to the left when item is not inside the platform in Y axis
+          if (
+            item.y + item.height <= platform.y + item.height &&
+            validMoveItemOnY(item, "+y")
+          ) {
+            item.status = "running";
+            return "bottom";
+          } else if (
+            item.y >= platform.y + platform.height - item.height &&
+            validMoveItemOnY(item, "-y")
+          ) {
+            item.status = "running";
+            return "top";
+          }
+
+          if (
+            item.x + item.width >= platform.x + platform.width - item.width &&
+            validMoveItemOnX(item, "+x")
+          ) {
+            item.status = "running";
+            return "top";
+          } else if (
+            item.x >= platform.x + item.width &&
+            validMoveItemOnX(item, "-x")
+          ) {
+            item.status = "running";
+            return "bottom";
+          }
+
+          return "right";
+        } else if (item.orientation === "right") {
+          if (
+            item.y + item.height <= platform.y + item.height &&
+            validMoveItemOnY(item, "+y")
+          ) {
+            item.status = "running";
+            return "bottom";
+          } else if (
+            item.y >= platform.y + platform.height - item.height &&
+            validMoveItemOnY(item, "-y")
+          ) {
+            item.status = "running";
+            return "top";
+          }
+
+          if (
+            item.x <= platform.x + item.width &&
+            validMoveItemOnX(item, "-x")
+          ) {
+            item.status = "running";
+            return "top";
+          } else if (
+            item.x + item.width >= platform.x + platform.width - item.width &&
+            validMoveItemOnX(item, "+x")
+          ) {
+            item.status = "running";
+            return "bottom";
+          }
+
+          return "left";
         }
+
+        item.status = "running";
+        return item.orientation;
       } else {
         if (
           item.x + item.width >= platform.x + platform.width &&
@@ -514,6 +589,10 @@ const TransportBand: React.FC = () => {
           updateItemPosition(item, movedDirection);
         }
 
+        if (item.status === "block") {
+          context.fillStyle = "black";
+        }
+
         // Draw the item
         context.fillRect(item.x, item.y, item.width, item.height);
       });
@@ -533,7 +612,7 @@ const TransportBand: React.FC = () => {
       ref={canvasRef}
       width={800}
       height={535}
-      style={{ border: "1px solid black" }}
+      className="w-full h-full"
     />
   );
 };

@@ -5,9 +5,9 @@ import SidebarComponent from "./components/Sidebar.component";
 
 function App() {
   return (
-    <div className="w-full h-screen flex flex-col justify-between">
+    <div className="w-full h-screen flex flex-col p-4">
       <HeaderContainer />
-      <div className="flex w-full h-full">
+      <div className="relative flex w-full h-full justify-center overflow-y-auto">
         <SidebarComponent />
         <Outlet />
       </div>

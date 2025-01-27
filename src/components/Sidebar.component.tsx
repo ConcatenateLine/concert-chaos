@@ -2,18 +2,25 @@ import { NavLink } from "react-router";
 
 const SidebarComponent = () => {
   return (
-    <nav className="w-1/4 h-3/4 bg-slate-600 flex flex-col">
-      <NavLink to="/" className="p-2">
+    <nav className="fixed left-10 bottom-16 border text-white flex flex-col bg-background md:bg-transparent">
+      <NavLink to="/" className="menu p-2 min-w-32">
         {({ isActive }) => (
           <span className={isActive ? "active" : ""}>
             {isActive ? "👉" : ""} Home
           </span>
         )}
       </NavLink>
-      <NavLink to="/dashboard" className="p-2">
+      <NavLink to="/dashboard" className="menu p-2 min-w-32">
         {({ isActive }) => (
           <span className={isActive ? "active" : ""}>
             {isActive ? "👉" : ""} Dashboard
+          </span>
+        )}
+      </NavLink>
+      <NavLink to="/about" className="menu p-2 min-w-32">
+        {({ isActive }) => (
+          <span className={isActive ? "active" : ""}>
+            {isActive ? "👉" : ""} About
           </span>
         )}
       </NavLink>

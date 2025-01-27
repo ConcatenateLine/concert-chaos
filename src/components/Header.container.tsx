@@ -1,7 +1,8 @@
 function HeaderContainer() {
   return (
-    <div className="p-2 w-full text-center h-1/3">
-      <h1 className="text-5xl">"Concert Chaos"</h1>
+    <div className="header p-2 w-full text-center">
+      <h1 className="text-4xl">Concert Chaos</h1>
+      <h1 className="text-4xl">2025</h1>
     </div>
   );
 }

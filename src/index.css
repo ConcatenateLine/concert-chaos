@@ -7,39 +7,32 @@
 @import "tailwindcss/utilities";
 /* @import "./custom-utilities.css"; */
 
-body {
-  background-color: theme("colors.slate.500");
+@font-face {
+  font-family: "Rushford Printed";
+  src: url("/fonts/rushford-printed-font/RushfordPrinted-MVnDe.otf");
 }
 
-.road {
-  width: 100%;
-  height: 200px;
-  background: linear-gradient(to bottom, #555, #333);
-  position: relative;
-  overflow: hidden;
+@font-face {
+  font-family: "Brandink Sans";
+  src: url("/fonts/brandink-sans-font/BrandinkSans-rgOpA.otf");
 }
 
-.box {
-  width: 50px;
-  height: 50px;
-  position: absolute;
-  bottom: 20px;
-  animation: drive 5s linear infinite;
+html {
+  background-color: theme("colors.background");
+  font-family: "Brandink Sans", sans-serif;
 }
 
-@keyframes drive {
-  0% {
-    left: -60px;
-  }
-  100% {
-    left: 100%;
-  }
+.header {
+  font-family: "Rushford Printed", sans-serif;
+  color: white;
+  font-weight: 100;
 }
 
-.perspective {
-  perspective: 1000px;
+.border {
+  border: 2px solid theme("colors.border");
+  border-radius: 0.5rem;
 }
 
-.transform {
-  transform-style: preserve-3d;
+.menu:hover {
+  background-color: theme("colors.foreground");
 }

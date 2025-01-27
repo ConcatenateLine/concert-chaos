@@ -1,6 +1,47 @@
 # Concert Chaos
 
-The Concert Chaos is a web application that simulates a circuit for packages transportation using a canvas to draw the circuit and the packages. The game's objective is to not block or saturate the transportation circuit with the packages.
+![screens](public/concertChaos.png)
+
+# Game Platform Documentation
+
+## Overview
+
+This document provides an overview and detailed instructions for the game platform focused on transporting packages across road sections. The primary objective is to maximize the score by efficiently managing package transportation without blocking road sections.
+
+## Game Objective
+
+- **Primary Goal**: Transport packages without blocking road sections.
+- **Scoring**: Maximize the score by transporting as many packages as possible.
+
+## Game Mechanics
+
+### Package Handling
+
+- **Direction Search**: Packages have the ability to search for directions to move.
+- **Blocked Packages**: If a package cannot find a road, it gets blocked, reducing the score.
+
+### User Configuration
+
+- **Interval Time**: Users can configure the interval time for serving packages.
+
+## Features
+
+- **Direction Search**: A feature that allows packages to search for available directions to move.
+- **User-Configurable Interval**: Users can set the interval time for package serving to optimize gameplay.
+
+## Scoring System
+
+- **Score Maximization**: Transport as many packages as possible to increase the score.
+- **Penalty**: Blocking road sections results in a score reduction.
+
+## Troubleshooting
+
+- **Blocked Packages**: Ensure that road sections are not blocked to prevent packages from getting stuck.
+- **Interval Configuration**: Adjust the interval time to find the optimal balance for package serving.
+
+## Conclusion
+
+This game platform challenges users to strategically manage package transportation across road sections. By configuring the interval time and ensuring roads are not blocked, users can maximize their scores and achieve the game's objectives.
 
 ## Project Structure
 
