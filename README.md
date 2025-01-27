@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document provides an overview and detailed instructions for the game platform focused on transporting packages across road sections. The primary objective is to maximize the score by efficiently managing package transportation without blocking road sections.
+Game platform focused on transporting packages across road sections. The primary objective is to maximize the score by efficiently managing package transportation without blocking road sections.
 
 ## Game Objective
 
