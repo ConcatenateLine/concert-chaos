@@ -1,4 +1,4 @@
-import BoxDrawComponent from "./components/BoxDraw.component";
+import BoxDrawComponent from "./components/BoxDrawSvg.component";
 
 const BoxContainer = () => {
   return (
