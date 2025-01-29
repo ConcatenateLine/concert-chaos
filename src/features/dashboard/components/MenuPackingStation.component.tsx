@@ -1,4 +1,4 @@
-import PackingStationInterface from "../../packingStation/interfaces/PackingStation";
+import PackingStationInterface from "../../packingStation/interfaces/PackingStation.interface";
 
 interface PackingStationProps {
   packingStation: PackingStationInterface;
@@ -14,7 +14,7 @@ const MenuPackingStationComponent = ({
         <span>No. {packingStation.id}</span>
       </div>
       <div className="flex flex-col items-center md:items-start">
-        <span className="flex gap-2 text-gray-600 dark:text-gray-400">
+        <span className="flex gap-2 text-gray-600 dark:text-gray-400 text-2xl">
           <span>+</span>
           <span>
             {packingStation.speed} <span className="text-white text-sm">s</span>

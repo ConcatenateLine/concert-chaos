@@ -6,14 +6,12 @@ interface BoxProps {
 
 const MenuBoxComponent = ({ box }: BoxProps) => {
   return (
-    <div className="flex flex-col p-1 border items-center text-white">
-      <div className="w-full text-sm flex justify-between">
-        <span>{box.status}</span>
-        {/* <span>No. {packingStation.id}</span> */}
-      </div>
-      <div className="flex flex-col items-center md:items-start">
-        <span className="flex gap-2 text-gray-600 dark:text-gray-400"></span>
-      </div>
+    <div
+      className="flex flex-col p-1 border items-center text-white"
+      style={{ backgroundColor: box.color }}
+    >
+      <span>{box.status}</span>
+      <span className="text-2xl"><span className="text-white text-sm">No. </span>{box.id}</span>
     </div>
   );
 };

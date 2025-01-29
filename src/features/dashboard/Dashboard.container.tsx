@@ -1,75 +1,46 @@
-import { useState } from "react";
-import ConveyorContainer from "../Conveyor/Conveyor.container";
-import BoxInterface from "../box/interfaces/Box.interface";
-import ConveyorInterface from "../Conveyor/interfaces/Conveyor.interface";
 import MenuPackingStationComponent from "./components/MenuPackingStation.component";
-import BoxColors from "../box/utils/BoxColors.utils";
-import PackingStationInterface from "../packingStation/interfaces/PackingStation";
 import MenuBoxComponent from "./components/MenuBox.component";
+import MenuBoxStatusComponent from "./components/MenuBoxStatus.component";
+import BoardContainer from "../board/board.container";
+import { useBoard } from "../board/hooks/useBoard";
+import MenuScoreComponent from "./components/MenuScore.component";
 
 const DashboardContainer = () => {
-  const [packingStations, setPackingStations] = useState<
-    PackingStationInterface[]
-  >([
-    {
-      x: 50,
-      y: 200,
-      width: 40,
-      height: 100,
-      status: "stop",
-      speed: 1,
-      color: BoxColors[0],
-      id: 1,
-    },
-    {
-      x: 750,
-      y: 400,
-      width: 40,
-      height: 100,
-      color: BoxColors[1],
-      id: 2,
-      speed: 1,
-      status: "run",
-    },
-  ]);
-  const [conveyors, setConveyors] = useState<ConveyorInterface[]>([]);
-  const [boxes, setBoxes] = useState<BoxInterface[]>([
-    {
-      x: -1,
-      y: -1,
-      step: 0,
-      width: 20,
-      height: 20,
-      color: BoxColors[0],
-      speed: 1,
-      status: "stop",
-      id: 0,
-      platformOrigin: 1,
-      platformDestination: 2,
-    },
-    {
-      step: 0,
-      x: -1,
-      y: -1,
-      width: 20,
-      height: 20,
-      color: BoxColors[0],
-      speed: 1,
-      status: "stop",
-      id: 1,
-      platformOrigin: 1,
-      platformDestination: 3,
-    },
-  ]);
+  const {
+    delivered,
+    blocked,
+    level,
+    packingStations,
+    conveyors,
+    boxes,
+    routes,
+    updateDelivered,
+    updateBlocked,
+    updateLevel,
+    updateRoutes,
+  } = useBoard();
 
   // TODO: Add Dashboard Logic
   return (
     <div className="relative w-full h-full flex flex-col">
-      <div className="w-full h-4/5 flex justify-center">
-        <ConveyorContainer />
+      <div className="fixed top-26 left-10 right-10 h-32  gap-4 flex justify-between">
+        <MenuScoreComponent title="Delivered" count={delivered} />
+        <MenuScoreComponent title="Blocked" count={blocked} />
       </div>
-      <div className="fixed pl-48 bottom-16 w-full h-32  gap-4 flex">
-        <div className="border w-2/5 p-1 grid lg:grid-cols-3 lg:grid-rows-2 gap-2 overflow-y-auto">
+      <div className="w-full h-4/5 flex justify-center">
+        <BoardContainer
+          conveyors={conveyors}
+          boxes={boxes}
+          packingStations={packingStations}
+          routes={routes}
+          updateDelivered={updateDelivered}
+          updateBlocked={updateBlocked}
+          updateLevel={updateLevel}
+          updateRoutes={updateRoutes}
+        />
+      </div>
+      <div className="fixed pl-60 bottom-16 w-full h-36 gap-4 flex">
+        <div className="border w-[49%]  p-1 grid lg:grid-cols-3 lg:grid-rows-2 gap-2 overflow-y-auto">
           {packingStations.map((packingStation) => (
             <MenuPackingStationComponent
               key={packingStation.id}
@@ -77,10 +48,19 @@ const DashboardContainer = () => {
             />
           ))}
         </div>
-        <div className="border w-2/5 p-1 grid lg:grid-cols-3 lg:grid-rows-2 gap-2 overflow-y-auto">
-          {boxes.map((box) => (
-            <MenuBoxComponent key={box.id} box={box} />
-          ))}
+        <div className="lg:flex border w-[46%] p-1 gap-2 overflow-y-auto">
+          <div className="lg:w-1/5 grid grid-cols-2 grid-rows-2">
+            <MenuBoxStatusComponent color="#c3c3c3c3" count={2} />
+            <MenuBoxStatusComponent color="#c3c3c3c3" count={2} />
+            <MenuBoxStatusComponent color="#c3c3c3c3" count={2} />
+            <MenuBoxStatusComponent color="#c3c3c3c3" count={2} />
+          </div>
+
+          <div className="lg:w-4/5 grid lg:grid-cols-6 lg:grid-rows-2 gap-2 overflow-y-auto">
+            {boxes.map((box) => (
+              <MenuBoxComponent key={box.id} box={box} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
