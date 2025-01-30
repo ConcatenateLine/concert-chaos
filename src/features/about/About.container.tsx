@@ -8,7 +8,7 @@ import PlatformsStateSvgComponent from "./components/PlatformsStateSvg.component
 
 const AboutContainer = () => {
   return (
-    <div className="w-full md:pl-44 grid gap-4">
+    <div className="w-full md:pl-44 grid gap-4 max-w-screen-xl">
       <AboutSectionComponent
         title="Packages delivered"
         content="Packages transported from one platform to another."

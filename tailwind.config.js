@@ -7,6 +7,7 @@ export default {
         background: "#171717",
         border: "#727272",
         foreground: "#3b3b3b",
+        emojiColor: "#ffc83d",
       },
     },
   },

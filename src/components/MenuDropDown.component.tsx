@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router";
+
 interface MenuDropDownProps {
   isOpen: boolean;
   toggleMenu: () => void;
@@ -13,6 +15,8 @@ const MenuDropDownComponent = ({
   login,
   isAuthenticated,
 }: MenuDropDownProps) => {
+  const navigate = useNavigate();
+
   const signIn = async () => {
     try {
       toggleMenu();
@@ -31,6 +35,11 @@ const MenuDropDownComponent = ({
     }
   };
 
+  const goToScores = () => {
+    toggleMenu();
+    navigate("/scores");
+  };
+
   return (
     <div
       className={`absolute right-0 z-30 mt-2 w-48 origin-top-right rounded-md bg-white py-1 ring-1 shadow-lg ring-black/5 focus:outline-hidden transition-transform duration-300 ease-in-out ${
@@ -45,6 +54,7 @@ const MenuDropDownComponent = ({
       <button
         className="w-full hover:bg-gray-200 rounded-lg block px-4 py-2 text-sm text-gray-700"
         aria-label="Scores"
+        onClick={goToScores}
       >
         Scores
       </button>

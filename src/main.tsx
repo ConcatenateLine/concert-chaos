@@ -8,6 +8,7 @@ import DashboardContainer from "./features/dashboard/Dashboard.container.tsx";
 import AboutContainer from "./features/about/About.container.tsx";
 import { AuthProvider } from "./features/auth/context/Auth.context.tsx";
 import { BoardProvider } from "./features/board/context/Board.context.tsx";
+import ScoresContainer from "./features/scores/Scores.container.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById("root")!).render(
               <Route index element={<AuthContainer />} />
               <Route path="dashboard" element={<DashboardContainer />} />
               <Route path="about" element={<AboutContainer />} />
+              <Route path="scores" element={<ScoresContainer />} />
             </Route>
           </Routes>
         </BrowserRouter>

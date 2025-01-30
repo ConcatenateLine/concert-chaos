@@ -1,21 +1,24 @@
 import { useRef, useEffect, useState } from "react";
-import BoxColors from "../box/utils/BoxColors.utils";
 import BoxInterface from "../box/interfaces/Box.interface";
-import TrasportationColors from "../Conveyor/utils/ConveyorColors.util";
 import PackingStationInterface from "../packingStation/interfaces/PackingStation.interface";
 import ConveyorInterface from "../Conveyor/interfaces/Conveyor.interface";
 import RouteInterface from "../Conveyor/interfaces/Route.interface";
 import ManhattanDistance from "../dashboard/utils/ManhattanDistance.util";
 import DrawBox from "./utils/DrawBox.util";
-import DrawBoard from "./utils/DrawBoard.util";
+import DrawConveyor from "./utils/DrawConveyor.util";
 import DrawRoute from "./utils/DrawRoute.util";
+import StatusAction from "./enums/StatusAction";
+import DrawPackingStation from "./utils/DrawPackingStation.util";
 
 interface BoadContainerProps {
   packingStations: PackingStationInterface[];
   conveyors: ConveyorInterface[];
   boxes: BoxInterface[];
   routes: RouteInterface[];
-  updateDelivered: (newDelivered: number) => void;
+  updateBoxes: (newBoxes: BoxInterface[]) => void;
+  addBox: (box: BoxInterface) => void;
+  updateBox: (box: BoxInterface) => void;
+  updateDelivered: (box: BoxInterface) => void;
   updateBlocked: (newBlocked: number) => void;
   updateLevel: (newLevel: number) => void;
   updateRoutes: (newRoutes: RouteInterface[]) => void;
@@ -35,6 +38,9 @@ const BoardContainer = ({
   conveyors,
   boxes,
   routes,
+  updateBoxes,
+  addBox,
+  updateBox,
   updateDelivered,
   updateBlocked,
   updateLevel,
@@ -66,6 +72,7 @@ const BoardContainer = ({
   ): Array<{ x: number; y: number }> => {
     const goal = {
       ...platform,
+      x: platform.x - platform.width / 2,
     };
 
     const start = {
@@ -73,12 +80,6 @@ const BoardContainer = ({
       x: item.x + item.width / 2,
       y: item.y + item.height / 2,
     };
-
-    if (item.x < platform.x) {
-      goal.x = platform.x + platform.width / 2;
-    } else {
-      goal.x = platform.x - platform.width / 2;
-    }
 
     if (item.y < platform.y) {
       goal.y = platform.y + platform.height / 2;
@@ -257,7 +258,7 @@ const BoardContainer = ({
   };
 
   const updateScoreDelivered = (box: BoxInterface) => {
-    updateDelivered(box.id);
+    updateDelivered(box);
   };
 
   useEffect(() => {
@@ -273,16 +274,38 @@ const BoardContainer = ({
 
     const draw = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
-      DrawBoard(context, localConveyors, localPackingStations);
+      DrawConveyor(context, localConveyors);
+
+      DrawPackingStation(context, localPackingStations, localRoutes, addBox);
 
       localRoutes.forEach((route) => {
-        if (route.path.length > 0) {
-          DrawRoute(context, route.path, route.color);
-        }
+        const station = localPackingStations.find(
+          (station) => station.id === route.start
+        );
+
+        if (
+          route.path.length === 0 ||
+          !station ||
+          station.status !== StatusAction.RUN
+        )
+          return;
+
+        DrawRoute(context, route.path, route.color);
       });
 
       localBoxes.forEach((box) => {
-        DrawBox(context, box, localRoutes, updateScoreDelivered);
+        const route = localRoutes.find((route) => route.id === box.route);
+        if (!route) return;
+
+        const station = localPackingStations.find(
+          (station) => station.id === route?.start
+        );
+
+        if (!station) return;
+
+        if (station.status !== StatusAction.RUN) return;
+
+        DrawBox(context, box, route, updateScoreDelivered);
       });
 
       animationFrameId = requestAnimationFrame(draw);

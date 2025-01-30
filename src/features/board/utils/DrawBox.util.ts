@@ -1,10 +1,11 @@
 import BoxInterface from "../../box/interfaces/Box.interface";
 import RouteInterface from "../../Conveyor/interfaces/Route.interface";
+import DrawRoundedRect from "./DrawRoundedRect.util";
 
 const DrawBox = (
   ctx: CanvasRenderingContext2D,
   box: BoxInterface,
-  localRoutes: RouteInterface[],
+  route: RouteInterface | undefined,
   updateDelivered?: (box: BoxInterface) => void
 ) => {
   const currentTime = performance.now(); // Get current time for timing control
@@ -12,8 +13,6 @@ const DrawBox = (
   // Set the Box color
   ctx.fillStyle = box.color;
 
-  // Find the route of the Box
-  const route = localRoutes.find((route) => route.id === box.route);
   if (!route) return;
 
   // Move the Box to platform destination with timing control
@@ -41,7 +40,9 @@ const DrawBox = (
   }
 
   // Draw the box
-  ctx.fillRect(box.x, box.y, box.width, box.height);
+  // TODO: Validate this function
+  // ctx.fillRect(box.x, box.y, box.width, box.height);
+  DrawRoundedRect(ctx, box.x, box.y, box.width, box.height, 5);
 };
 
 export default DrawBox;

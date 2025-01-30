@@ -11,7 +11,7 @@ const MenuBoxComponent = ({ box }: BoxProps) => {
       style={{ backgroundColor: box.color }}
     >
       <span>{box.status}</span>
-      <span className="text-2xl"><span className="text-white text-sm">No. </span>{box.id}</span>
+      <span className="text-sm"><span className="text-white text-sm">No. </span>{box.id}</span>
     </div>
   );
 };

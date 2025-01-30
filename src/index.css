@@ -40,3 +40,7 @@ html {
 .font-general {
   font-family: "Brandink Sans", sans-serif;
 }
+
+.text-emoji-color {
+  color: theme("colors.emojiColor");
+}

@@ -1,9 +1,10 @@
 import MenuPackingStationComponent from "./components/MenuPackingStation.component";
 import MenuBoxComponent from "./components/MenuBox.component";
-import MenuBoxStatusComponent from "./components/MenuBoxStatus.component";
 import BoardContainer from "../board/board.container";
-import { useBoard } from "../board/hooks/useBoard";
+import useBoard from "../board/hooks/useBoard";
 import MenuScoreComponent from "./components/MenuScore.component";
+import MenuModalGameComponent from "./components/MenuModalGame.component";
+import MenuBoxStatusSummaryComponent from "./components/MenuBoxStatusSummary.component";
 
 const DashboardContainer = () => {
   const {
@@ -18,11 +19,28 @@ const DashboardContainer = () => {
     updateBlocked,
     updateLevel,
     updateRoutes,
+    // Box state update
+    updateBoxes,
+    addBox,
+    updateBox,
+    // Packing Station state update
+    updatePackingStationSpeed,
+    updatePackingStationStatus,
+    // Board state update
+    resetBoard,
+    gameOver,
   } = useBoard();
 
   // TODO: Add Dashboard Logic
   return (
     <div className="relative w-full h-full flex flex-col">
+      <MenuModalGameComponent
+        isOpen={gameOver}
+        onClose={resetBoard}
+        delivered={delivered}
+        blocked={blocked}
+        level={level}
+      />
       <div className="fixed top-26 left-10 right-10 h-32  gap-4 flex justify-between">
         <MenuScoreComponent title="Delivered" count={delivered} />
         <MenuScoreComponent title="Blocked" count={blocked} />
@@ -33,6 +51,9 @@ const DashboardContainer = () => {
           boxes={boxes}
           packingStations={packingStations}
           routes={routes}
+          updateBoxes={updateBoxes}
+          addBox={addBox}
+          updateBox={updateBox}
           updateDelivered={updateDelivered}
           updateBlocked={updateBlocked}
           updateLevel={updateLevel}
@@ -45,20 +66,22 @@ const DashboardContainer = () => {
             <MenuPackingStationComponent
               key={packingStation.id}
               packingStation={packingStation}
+              updateSpeed={updatePackingStationSpeed}
+              updateStatus={updatePackingStationStatus}
             />
           ))}
         </div>
         <div className="lg:flex border w-[46%] p-1 gap-2 overflow-y-auto">
           <div className="lg:w-1/5 grid grid-cols-2 grid-rows-2">
-            <MenuBoxStatusComponent color="#c3c3c3c3" count={2} />
-            <MenuBoxStatusComponent color="#c3c3c3c3" count={2} />
-            <MenuBoxStatusComponent color="#c3c3c3c3" count={2} />
-            <MenuBoxStatusComponent color="#c3c3c3c3" count={2} />
+            <MenuBoxStatusSummaryComponent boxes={boxes} />
           </div>
 
           <div className="lg:w-4/5 grid lg:grid-cols-6 lg:grid-rows-2 gap-2 overflow-y-auto">
             {boxes.map((box) => (
-              <MenuBoxComponent key={box.id} box={box} />
+              <MenuBoxComponent
+                key={`${box.id} ${box.platformOrigin}`}
+                box={box}
+              />
             ))}
           </div>
         </div>
