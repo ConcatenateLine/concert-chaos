@@ -4,16 +4,21 @@ import RouteInterface from "../../Conveyor/interfaces/Route.interface";
 import PackingStationInterface from "../../packingStation/interfaces/PackingStation.interface";
 
 export interface BoardStateInterface {
-  delivered: number;
-  blocked: number;
+  boxesDelivered: number;
+  boxesBlocked: number;
+  boxesCollisions: number;
   level: number;
   lastTime: number;
   gameOver: boolean;
+  currentTime: number;
+  reasonForFire: string;
+  passedTime: number;
 }
 
 export interface ScoreInterface {
   score: number;
   user: string;
+  reasonForFire?: string;
 }
 
 export default interface BoardContextInterface extends BoardStateInterface {
@@ -23,9 +28,10 @@ export default interface BoardContextInterface extends BoardStateInterface {
   routes: RouteInterface[];
   scores: ScoreInterface[];
   latestScore: ScoreInterface;
-  updateDelivered: (newDelivered: BoxInterface) => void;
-  updateBlocked: (newBlocked: number) => void;
-  updateLevel: (newLevel: number) => void;
+  updateBoxesDelivered: (newDelivered: BoxInterface) => void;
+  updateBoxesBlocked: (newBlocked: BoxInterface) => void;
+  updateBoxesCollisions: (newBlocked: BoxInterface) => void;
+  updateLevel: () => void;
   updateRoutes: (newRoutes: RouteInterface[]) => void;
   updateBoxes: (newBoxes: BoxInterface[]) => void;
   addBox: (box: BoxInterface) => void;
@@ -33,4 +39,6 @@ export default interface BoardContextInterface extends BoardStateInterface {
   updatePackingStationSpeed?: (id: number, speedOption: string) => void;
   updatePackingStationStatus?: (id: number, statusOption: string) => void;
   resetBoard: () => void;
+  updateLastTime: (number: number) => void;
+  updateBoard: boolean;
 }

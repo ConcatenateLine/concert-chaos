@@ -11,7 +11,7 @@ class Box {
   status: string;
   route: number;
   step: number;
-  id: number;
+  id: string;
 
   constructor(
     x?: number,
@@ -25,7 +25,7 @@ class Box {
     status?: string,
     route?: number,
     step?: number,
-    id?: number
+    id?: string
   ) {
     this.x = x || 0;
     this.y = y || 0;
@@ -38,7 +38,7 @@ class Box {
     this.status = status || "idle";
     this.route = route || 0;
     this.step = step || 0;
-    this.id = id || -1;
+    this.id = id || "-1";
   }
 }
 

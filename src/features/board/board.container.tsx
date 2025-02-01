@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import BoxInterface from "../box/interfaces/Box.interface";
 import PackingStationInterface from "../packingStation/interfaces/PackingStation.interface";
 import ConveyorInterface from "../Conveyor/interfaces/Conveyor.interface";
@@ -9,28 +9,28 @@ import DrawConveyor from "./utils/DrawConveyor.util";
 import DrawRoute from "./utils/DrawRoute.util";
 import StatusAction from "./enums/StatusAction";
 import DrawPackingStation from "./utils/DrawPackingStation.util";
+import Node from "./interfaces/Node.interface";
+import { createGridBoard } from "./utils/GridBoard.util";
+import SquareInterface from "./interfaces/Square.interface";
+import CheckBoxCollisions from "./utils/CheckBoxCollisions.util";
+import DrawBarRemainingTime from "./utils/DrawBarRemainingTime.util";
 
 interface BoadContainerProps {
   packingStations: PackingStationInterface[];
   conveyors: ConveyorInterface[];
   boxes: BoxInterface[];
   routes: RouteInterface[];
+  lastTime: number;
+  currentTime: number;
   updateBoxes: (newBoxes: BoxInterface[]) => void;
   addBox: (box: BoxInterface) => void;
   updateBox: (box: BoxInterface) => void;
-  updateDelivered: (box: BoxInterface) => void;
-  updateBlocked: (newBlocked: number) => void;
-  updateLevel: (newLevel: number) => void;
+  updateBoxesDelivered: (box: BoxInterface) => void;
+  updateBoxesCollisions: (newBlocked: BoxInterface) => void;
+  updateLevel: () => void;
   updateRoutes: (newRoutes: RouteInterface[]) => void;
-}
-
-interface Node {
-  x: number;
-  y: number;
-  g: number; // Cost from start to this node
-  h: number; // Heuristic cost to goal
-  f: number; // Total cost
-  parent?: Node; // Parent node for path reconstruction
+  updateLastTime: (number: number) => void;
+  updateBoard: boolean;
 }
 
 const BoardContainer = ({
@@ -38,13 +38,17 @@ const BoardContainer = ({
   conveyors,
   boxes,
   routes,
+  lastTime,
+  currentTime,
   updateBoxes,
   addBox,
   updateBox,
-  updateDelivered,
-  updateBlocked,
+  updateBoxesDelivered,
+  updateBoxesCollisions,
   updateLevel,
   updateRoutes,
+  updateLastTime,
+  updateBoard,
 }: BoadContainerProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const localBoxes: BoxInterface[] = [...boxes];
@@ -52,27 +56,23 @@ const BoardContainer = ({
   const localPackingStations: PackingStationInterface[] = [...packingStations];
   const localRoutes: RouteInterface[] = [...routes];
 
-  const [updateBoard, setUpdateBoard] = useState<boolean>(false);
   const gridSize = 10; // Define the grid size (the size of the square unit)
   const canvasWidth = 855;
-  const canvasHeight = 600;
+  const canvasHeight = 615;
+
+  const grid = createGridBoard(localConveyors, gridSize);
 
   // Updated findPathToPlatform function
   const findPathToPlatform = (
     item: { x: number; y: number; width: number; height: number },
     platform: { x: number; y: number; width: number; height: number },
-    localConveyors: Array<{
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    }>,
-    grid: boolean[][],
+    grid: SquareInterface[][],
     gridSize: number
   ): Array<{ x: number; y: number }> => {
     const goal = {
       ...platform,
-      x: platform.x - platform.width / 2,
+      x: platform.x + platform.width / 2,
+      y: platform.y + platform.height / 2,
     };
 
     const start = {
@@ -80,12 +80,6 @@ const BoardContainer = ({
       x: item.x + item.width / 2,
       y: item.y + item.height / 2,
     };
-
-    if (item.y < platform.y) {
-      goal.y = platform.y + platform.height / 2;
-    } else {
-      goal.y = platform.y - platform.height / 2;
-    }
 
     // Use A* to find the path
     const path = aStarPathfinding(start, goal, grid, gridSize);
@@ -99,7 +93,7 @@ const BoardContainer = ({
   const aStarPathfinding = (
     start: { x: number; y: number; width: number; height: number },
     goal: { x: number; y: number; width: number; height: number },
-    grid: boolean[][],
+    grid: SquareInterface[][],
     gridSize: number
   ): Array<{ x: number; y: number }> => {
     const openSet: Node[] = [];
@@ -121,9 +115,9 @@ const BoardContainer = ({
       // Check if we've reached the goal
       if (
         currentNode.x >= Math.floor(goal.x / gridSize) &&
-        currentNode.x <= Math.floor((goal.x + goal.width) / gridSize) &&
+        currentNode.x <= Math.floor(goal.x / gridSize) &&
         currentNode.y >= Math.floor(goal.y / gridSize) &&
-        currentNode.y <= Math.floor((goal.y + goal.height) / gridSize)
+        currentNode.y <= Math.floor(goal.y / gridSize)
       ) {
         const path: Array<{ x: number; y: number }> = [];
         let tempNode: Node | undefined = currentNode;
@@ -150,7 +144,7 @@ const BoardContainer = ({
           neighbor.x < grid[0].length &&
           neighbor.y >= 0 &&
           neighbor.y < grid.length &&
-          grid[neighbor.y][neighbor.x]
+          grid[neighbor.y][neighbor.x].isRoad
         ) {
           if (closedSet.has(`${neighbor.x},${neighbor.y}`)) continue;
 
@@ -187,49 +181,7 @@ const BoardContainer = ({
     return []; // No path found
   };
 
-  // Function to create a grid representation of the road sections
-  // Recive the road sections and the grid size (the size of the square unit)
-  const createGridBoard = (
-    localConveyors: Array<{
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    }>,
-    gridUnitSize: number
-  ): boolean[][] => {
-    const grid: boolean[][] = [];
-
-    // Determine the size of the grid based on the road sections
-    const maxWidth = Math.max(
-      ...localConveyors.map((section) => section.x + section.width)
-    );
-    const maxHeight = Math.max(
-      ...localConveyors.map((section) => section.y + section.height)
-    );
-
-    // Initialize the grid
-    for (let y = 0; y < maxHeight; y += gridUnitSize) {
-      const row: boolean[] = [];
-      for (let x = 0; x < maxWidth; x += gridUnitSize) {
-        // Check if the grid cell is within any road section
-        const isRoad = localConveyors.some(
-          (section) =>
-            x >= section.x &&
-            x < section.x + section.width &&
-            y >= section.y &&
-            y < section.y + section.height
-        );
-        row.push(isRoad);
-      }
-      grid.push(row);
-    }
-    return grid;
-  };
-
   const initBoard = () => {
-    const grid = createGridBoard(localConveyors, gridSize);
-
     const newRoutes = localRoutes.map((route) => {
       const originPackingStation = localPackingStations.find(
         (packingStation) => packingStation.id === route.start
@@ -247,7 +199,6 @@ const BoardContainer = ({
         path: findPathToPlatform(
           originPackingStation,
           destinationPackingStation,
-          localConveyors,
           grid,
           gridSize
         ),
@@ -255,10 +206,6 @@ const BoardContainer = ({
     });
 
     updateRoutes(newRoutes);
-  };
-
-  const updateScoreDelivered = (box: BoxInterface) => {
-    updateDelivered(box);
   };
 
   useEffect(() => {
@@ -305,8 +252,28 @@ const BoardContainer = ({
 
         if (station.status !== StatusAction.RUN) return;
 
-        DrawBox(context, box, route, updateScoreDelivered);
+        if (CheckBoxCollisions(box, grid, gridSize)) {
+          updateBoxesCollisions(box);
+        }
+
+        DrawBox(
+          context,
+          box,
+          route,
+          grid,
+          gridSize,
+          updateBoxesDelivered,
+          updateLastTime
+        );
       });
+
+      DrawBarRemainingTime(
+        context,
+        canvasWidth,
+        canvasHeight,
+        currentTime,
+        lastTime
+      );
 
       animationFrameId = requestAnimationFrame(draw);
     };

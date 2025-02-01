@@ -4,19 +4,21 @@ import BoardContainer from "../board/board.container";
 import useBoard from "../board/hooks/useBoard";
 import MenuScoreComponent from "./components/MenuScore.component";
 import MenuModalGameComponent from "./components/MenuModalGame.component";
-import MenuBoxStatusSummaryComponent from "./components/MenuBoxStatusSummary.component";
+import MenuRoutesSummaryComponent from "./components/MenuRoutesSummary.component";
 
 const DashboardContainer = () => {
   const {
-    delivered,
-    blocked,
+    boxesDelivered,
+    boxesBlocked,
+    boxesCollisions,
     level,
     packingStations,
     conveyors,
     boxes,
     routes,
-    updateDelivered,
-    updateBlocked,
+    updateBoxesDelivered,
+    updateBoxesCollisions,
+    updateBoxesBlocked,
     updateLevel,
     updateRoutes,
     // Box state update
@@ -29,6 +31,12 @@ const DashboardContainer = () => {
     // Board state update
     resetBoard,
     gameOver,
+    reasonForFire,
+    // Time state
+    lastTime,
+    currentTime,
+    updateLastTime,
+    updateBoard,
   } = useBoard();
 
   // TODO: Add Dashboard Logic
@@ -37,13 +45,19 @@ const DashboardContainer = () => {
       <MenuModalGameComponent
         isOpen={gameOver}
         onClose={resetBoard}
-        delivered={delivered}
-        blocked={blocked}
+        boxesDelivered={boxesDelivered}
+        boxesBlocked={boxesBlocked}
+        boxesCollisions={boxesCollisions}
         level={level}
+        reasonForFire={reasonForFire}
       />
       <div className="fixed top-26 left-10 right-10 h-32  gap-4 flex justify-between">
-        <MenuScoreComponent title="Delivered" count={delivered} />
-        <MenuScoreComponent title="Blocked" count={blocked} />
+        <MenuScoreComponent title="Delivered" count={boxesDelivered} />
+        <MenuScoreComponent title="Blocked" count={boxesBlocked} />
+      </div>
+      <div className="fixed top-72 left-10 right-10 h-32  gap-4 flex justify-between">
+        <MenuScoreComponent title="Level" count={level} />
+        <MenuScoreComponent title="Collisions" count={boxesCollisions} />
       </div>
       <div className="w-full h-4/5 flex justify-center">
         <BoardContainer
@@ -51,17 +65,21 @@ const DashboardContainer = () => {
           boxes={boxes}
           packingStations={packingStations}
           routes={routes}
+          lastTime={lastTime}
+          currentTime={currentTime}
           updateBoxes={updateBoxes}
           addBox={addBox}
           updateBox={updateBox}
-          updateDelivered={updateDelivered}
-          updateBlocked={updateBlocked}
+          updateBoxesDelivered={updateBoxesDelivered}
+          updateBoxesCollisions={updateBoxesCollisions}
           updateLevel={updateLevel}
           updateRoutes={updateRoutes}
+          updateLastTime={updateLastTime}
+          updateBoard={updateBoard}
         />
       </div>
       <div className="fixed pl-60 bottom-16 w-full h-36 gap-4 flex">
-        <div className="border w-[49%]  p-1 grid lg:grid-cols-3 lg:grid-rows-2 gap-2 overflow-y-auto">
+        <div className="border w-[49%]  p-1 grid lg:grid-cols-3 gap-2 overflow-y-auto">
           {packingStations.map((packingStation) => (
             <MenuPackingStationComponent
               key={packingStation.id}
@@ -71,12 +89,12 @@ const DashboardContainer = () => {
             />
           ))}
         </div>
-        <div className="lg:flex border w-[46%] p-1 gap-2 overflow-y-auto">
-          <div className="lg:w-1/5 grid grid-cols-2 grid-rows-2">
-            <MenuBoxStatusSummaryComponent boxes={boxes} />
+        <div className="lg:flex border w-[36%] p-1 gap-2 overflow-y-auto">
+          <div className="lg:w-1/5 grid grid-cols-2 gap-2">
+            <MenuRoutesSummaryComponent routes={routes} />
           </div>
 
-          <div className="lg:w-4/5 grid lg:grid-cols-6 lg:grid-rows-2 gap-2 overflow-y-auto">
+          <div className="lg:w-4/5 grid lg:grid-cols-5 gap-2 overflow-y-auto">
             {boxes.map((box) => (
               <MenuBoxComponent
                 key={`${box.id} ${box.platformOrigin}`}

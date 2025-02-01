@@ -11,8 +11,10 @@ const AuthContainer = () => {
         <div className="grid lg:grid-cols-2 gap-4 md:gap-0 text-2xl">
           <div className="text-2xl">
             <div className="flex flex-col">
-              <span className="text-2xl">Latest score:</span>
-              <span className="text-2xl">{latestScore?.user ?? "Guest"}</span>
+              <span className="text-2xl">🚚 {latestScore?.user ?? "Guest"}</span>
+              <span className="text-2xl">
+                {latestScore?.reasonForFire ?? "You got fired!"}
+              </span>
             </div>
           </div>
           <span className="text-8xl header text-emoji-color">

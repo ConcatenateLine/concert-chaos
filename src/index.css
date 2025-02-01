@@ -41,6 +41,11 @@ html {
   font-family: "Brandink Sans", sans-serif;
 }
 
+.font-rushford {
+  font-family: "Rushford Printed", sans-serif;
+  line-height: 1.2;
+}
+
 .text-emoji-color {
   color: theme("colors.emojiColor");
 }

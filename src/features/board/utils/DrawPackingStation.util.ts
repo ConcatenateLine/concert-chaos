@@ -19,13 +19,7 @@ const DrawPackingStation = (
     }
 
     ctx.fillStyle = packingStation.color;
-    // TODO: Validate this function
-    // ctx.fillRect(
-    //   packingStation.x,
-    //   packingStation.y,
-    //   packingStation.width,
-    //   packingStation.height
-    // );
+
     DrawRoundedRect(
       ctx,
       packingStation.x,
@@ -62,14 +56,16 @@ const DrawPackingStation = (
         station.y,
         20,
         20,
-        station.color,
+        packingStation.color,
         1,
         packingStation.id,
-        station.id
+        station.id,
+        StatusAction.RUN
       );
 
       box.route = route.id;
-      box.id = route.id + Math.floor(Math.random() * 1000);
+      box.id = `${route.id}-${Math.floor(Math.random() * 6000)}`;
+
       addBox(box);
     });
 

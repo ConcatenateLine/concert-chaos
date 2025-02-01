@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import BoardContextInterface, {
   BoardStateInterface,
+  ScoreInterface,
 } from "../interfaces/BoardContext.interface";
 import BoxColors from "../../box/utils/BoxColors.utils";
 import BoxInterface from "../../box/interfaces/Box.interface";
@@ -10,26 +11,38 @@ import RouteInterface from "../../Conveyor/interfaces/Route.interface";
 import ConveyorColors from "../../Conveyor/utils/ConveyorColors.util";
 import SpeedAction from "../enums/SpeedOption";
 import StatusAction from "../enums/StatusAction";
+import { getLevelData } from "../../level/utils/Levels.util";
 
 export const BoardContext = createContext<BoardContextInterface | undefined>(
   undefined
 );
 
 export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
+  const maxBoxesCollisions = 50;
+  const maxBoxesBlocked = 10;
+
   const [boardState, setBoardState] = useState<BoardStateInterface>({
-    delivered: 0,
-    blocked: 0,
-    level: 1,
+    boxesDelivered: 0,
+    boxesBlocked: 0,
+    boxesCollisions: 0,
+    level: 0,
     lastTime: 0,
     gameOver: false,
+    currentTime: 60000, //1 minute max for level 1
+    reasonForFire: "You have been fired for no reason",
+    passedTime: 0,
   });
+
+  const [boxes, setBoxes] = useState<BoxInterface[]>([]);
+  const [boxIds, setBoxIds] = useState<Set<string>>(new Set());
+  const [updateBoard, setUpdateBoard] = useState<boolean>(false);
 
   const [packingStations, setPackingStations] = useState<
     PackingStationInterface[]
   >([
     {
       x: 50,
-      y: 200,
+      y: 400,
       width: 60,
       height: 100,
       color: BoxColors[0],
@@ -48,18 +61,18 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
       id: 2,
     },
     {
-      x: 355,
+      x: 350,
       y: 0,
-      width: 100,
-      height: 60,
+      width: 60,
+      height: 100,
       color: BoxColors[2],
       speed: 1,
       status: "Stop",
       id: 3,
     },
     {
-      x: 355,
-      y: 500,
+      x: 350,
+      y: 540,
       width: 100,
       height: 60,
       color: BoxColors[3],
@@ -69,85 +82,27 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
     },
   ]);
   const [conveyors, setConveyors] = useState<ConveyorInterface[]>([
-    { x: 50, y: 40, width: 200, height: 100, color: ConveyorColors[0] }, // Bottom side (Top in screen)
-    { x: 50, y: 40, width: 100, height: 450, color: ConveyorColors[0] }, // Left side
-    { x: 200, y: 40, width: 100, height: 450, color: ConveyorColors[0] }, // Left side
-    { x: 355, y: 130, width: 100, height: 450, color: ConveyorColors[0] }, // Left side
-    { x: 650, y: 40, width: 100, height: 450, color: ConveyorColors[0] }, // Right side
-    { x: 50, y: 400, width: 450, height: 100, color: ConveyorColors[0] }, // Top side
-    { x: 355, y: 0, width: 450, height: 100, color: ConveyorColors[0] }, // bottom side
-    {
-      x: 355,
-      y: 400,
-      width: 450,
-      height: 100,
-      color: ConveyorColors[0],
-    }, // Top side
-  ]);
-  const [boxes, setBoxes] = useState<BoxInterface[]>([
-    {
-      x: -1,
-      y: -1,
-      step: 0,
-      width: 20,
-      height: 20,
-      color: BoxColors[0],
-      speed: 1,
-      status: "Stop",
-      id: 0,
-      platformOrigin: 1,
-      platformDestination: 3,
-      route: 0,
-    },
-    {
-      step: 0,
-      x: -1,
-      y: -1,
-      width: 20,
-      height: 20,
-      color: BoxColors[0],
-      speed: 1,
-      status: "Stop",
-      id: 1,
-      platformOrigin: 2,
-      platformDestination: 4,
-      route: 1,
-    },
+    { x: 350, y: 400, width: 100, height: 200, color: ConveyorColors[0] },
+    { x: 650, y: 0, width: 100, height: 600, color: ConveyorColors[0] },
+    { x: 50, y: 400, width: 760, height: 100, color: ConveyorColors[0] },
+    { x: 350, y: 0, width: 400, height: 100, color: ConveyorColors[0] },
   ]);
   const [routes, setRoutes] = useState<RouteInterface[]>([
     {
       id: 0,
       start: 1,
       end: 3,
-      color: "white",
+      color: BoxColors[0],
       path: [],
     },
     {
       id: 1,
       start: 2,
       end: 4,
-      color: "white",
+      color: BoxColors[1],
       path: [],
     },
   ]);
-
-  const [boxIds, setBoxIds] = useState<Set<number>>(new Set());
-
-  const updateDelivered = (box: BoxInterface) => {
-    const prevBoxIds = boxIds;
-    boxIds.delete(box.id);
-
-    setBoxes((prev) => prev.filter((b) => b.id !== box.id));
-    setBoardState((prev) => ({ ...prev, delivered: boardState.delivered + 1 }));
-    setBoxIds((prev) => new Set(prevBoxIds));
-  };
-  const updateBlocked = (newScore: number) => {
-    setBoardState((prev) => ({ ...prev, blocked: newScore }));
-  };
-
-  const updateLevel = (newLevel: number) => {
-    setBoardState((prev) => ({ ...prev, level: newLevel }));
-  };
 
   const updateRoutes = (newRoutes: RouteInterface[]) => {
     setRoutes(newRoutes);
@@ -160,15 +115,66 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addBox = (box: BoxInterface) => {
     if (boxIds.has(box.id)) {
-      gameover();
+      // Box have been blocked because it's already present in the board (Id box is already present)
+      updateBoxesBlocked(box);
     } else {
       setBoxIds((prev) => new Set(prev).add(box.id));
       setBoxes((prev) => [...prev, box]);
     }
+
+    isGameOver();
   };
 
   const updateBox = (box: BoxInterface) => {
     setBoxes((prev) => prev.map((b) => (b.id === box.id ? box : b)));
+  };
+
+  const updateBoxesDelivered = (box: BoxInterface) => {
+    const prevBoxIds = boxIds;
+    prevBoxIds.delete(box.id);
+
+    setBoxes((prev) => prev.filter((b) => b.id !== box.id));
+
+    setBoxIds(() => new Set(prevBoxIds));
+
+    if (box.status !== StatusAction.RUN) return;
+
+    setBoardState((prev) => ({
+      ...prev,
+      boxesDelivered: boardState.boxesDelivered + 1,
+    }));
+
+    if (boardState.boxesDelivered >= boardState.level * 100) {
+      updateLevel();
+    }
+  };
+
+  const updateBoxesBlocked = (box: BoxInterface) => {
+    setBoardState((prev) => ({
+      ...prev,
+      boxesBlocked: prev.boxesBlocked + 1,
+      reasonForFire:
+        prev.boxesBlocked + 1 >= prev.level * maxBoxesBlocked
+          ? "You have been fired for exceed the maximum number of blocked boxes"
+          : "You have been fired for no reason",
+    }));
+  };
+
+  const updateBoxesCollisions = (box: BoxInterface) => {
+    updateBox({
+      ...box,
+      x: box.x + 20,
+      y: box.y + 20,
+      status: StatusAction.COLLISION,
+    });
+    setBoardState((prev) => ({
+      ...prev,
+      boxesCollisions: prev.boxesCollisions + 1,
+      reasonForFire:
+        prev.boxesCollisions + 1 >= prev.level * maxBoxesCollisions
+          ? "You have been fired for exceed the maximum number of collisions"
+          : "You have been fired for no reason",
+    }));
   };
 
   // Packing Station state update
@@ -199,6 +205,10 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const updatePackingStationStatus = (id: number, statusOption: string) => {
+    if (!packingStations || packingStations.length === 0) {
+      return;
+    }
+
     setPackingStations((prev) =>
       prev.map((station) => {
         let newStatus = station.status;
@@ -224,44 +234,112 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
 
-  // Game over
-  const gameover = () => {
-    setBoardState((prev) => ({ ...prev, gameOver: true }));
+  // Level management
+  const updateLevel = () => {
+    setBoardState((prev) => ({
+      ...prev,
+      level: prev.level + 1,
+      boxesCollisions: prev.boxesCollisions - prev.level * 20,
+      boxesBlocked: prev.boxesBlocked - prev.level * 5,
+      lastTime: 0,
+      currentTime: prev.currentTime - 3000,
+    }));
 
-    setBoxes([]);
-    setPackingStations((prev) =>
-      prev.map((station) => ({ ...station, status: StatusAction.STOP }))
-    );
-    // TODO: reset routes
-    // setConveyors([]);
-    // setRoutes([]);
-
-    setLocalStorage();
+    initializeLevel(boardState.level);
   };
 
-  const resetBoard = () => {
-    setBoardState((prev) => ({ ...prev, delivered: 0, gameOver: false }));
-  };
-
-  const setLocalStorage = () => {
-    const user = "Guest" + new Date().toUTCString();
-
-    if (scores.length > 9) {
-      scores.shift();
+  const updateLastTime = (number: number) => {
+    if (boardState.lastTime === 0) {
+      setBoardState((prev) => ({
+        ...prev,
+        lastTime: number,
+      }));
+    } else if (number - boardState.lastTime > boardState.currentTime) {
+      setBoardState((prev) => ({
+        ...prev,
+        gameOver: true,
+        lastTime: 0,
+        reasonForFire:
+          "You have been fired for exceed the maximum time for completing the level",
+      }));
     }
+  };
+
+  const initializeLevel = async (levelIndex: number) => {
+    const levelData = await getLevelData(levelIndex); // Await the promise
+    setPackingStations((prev) => [...prev, ...levelData.packingStations]);
+    setConveyors((prev) => [...prev, ...levelData.conveyors]);
+    setRoutes((prev) => [...prev, ...levelData.routes]);
+
+    setUpdateBoard((prev) => !prev);
+  };
+
+  // Game over
+  const isGameOver = () => {
+    if (
+      boardState.gameOver ||
+      boardState.boxesCollisions >= boardState.level + 1 * maxBoxesCollisions ||
+      boardState.boxesBlocked >= boardState.level + 1 * maxBoxesBlocked
+    ) {
+      setBoardState((prev) => ({ ...prev, gameOver: true, lastTime: 0 }));
+
+      setBoxes([]);
+      setPackingStations((prev) =>
+        prev.map((station) => ({
+          ...station,
+          status: StatusAction.STOP,
+          level: 1,
+          lastDeliveryTime: 0,
+        }))
+      );
+      setBoxIds(new Set());
+      // TODO: reset routes
+      // setConveyors([]);
+      // setRoutes([]);
+
+      setLocalStorage();
+    }
+  };
+
+  const resetBoard = (user: string = "Guest" + new Date().toUTCString()) => {
+    setBoardState((prev) => ({
+      ...prev,
+      boxesDelivered: 0,
+      boxesBlocked: 0,
+      boxesCollisions: 0,
+      level: 1,
+      lastTime: 0,
+      currentTime: 60000,
+      gameOver: false,
+      reasonForFire: "You have been fired for no reason",
+    }));
+    setLocalStorage(user, true);
+  };
+
+  const setLocalStorage = (
+    user: string = "Guest" + new Date().toUTCString(),
+    changeName: boolean = false
+  ) => {
+    if (changeName || scores.length >= 9) scores.pop();
 
     scores.push({
-      score: boardState.delivered,
+      score: boardState.boxesDelivered,
       user: user,
+      reasonForFire: boardState.reasonForFire,
     });
 
     localStorage.setItem(
       "ConcertChaos",
       JSON.stringify({
-        scores: scores,
+        scores: changeName
+          ? scores.sort(
+              (a: ScoreInterface, b: ScoreInterface) => b.score - a.score
+            )
+          : scores,
         latestScore: {
-          score: boardState.delivered,
+          score: boardState.boxesDelivered,
           user: user,
+          reasonForFire: boardState.reasonForFire,
         },
       })
     );
@@ -269,6 +347,7 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
 
   const getLocalStorage = () => {
     const data = localStorage.getItem("ConcertChaos");
+
     if (!data) return;
     return JSON.parse(data);
   };
@@ -276,6 +355,7 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
   const { scores, latestScore } = getLocalStorage() || {
     scores: [],
     latestScore: 0,
+    reasonForFire: "You have been fired for no reason",
   };
 
   return (
@@ -288,8 +368,9 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
         routes,
         scores,
         latestScore,
-        updateDelivered,
-        updateBlocked,
+        updateBoxesDelivered,
+        updateBoxesBlocked,
+        updateBoxesCollisions,
         updateLevel,
         updateRoutes,
         updateBoxes,
@@ -298,6 +379,8 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
         updatePackingStationSpeed,
         updatePackingStationStatus,
         resetBoard,
+        updateLastTime,
+        updateBoard,
       }}
     >
       {children}

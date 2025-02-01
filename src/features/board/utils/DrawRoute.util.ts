@@ -9,7 +9,8 @@ const DrawRoute = (
   path.forEach((point) => {
     ctx.lineTo(point.x, point.y);
   });
-  ctx.strokeStyle = color; // Set the color of the route
+  // ctx.strokeStyle = "transparent"; // Set the color of the route
+  ctx.strokeStyle = color;
   ctx.lineWidth = 5; // Set the width of the route
   ctx.setLineDash([20, 10]);
   ctx.stroke();

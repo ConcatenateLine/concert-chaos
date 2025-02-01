@@ -11,7 +11,7 @@ interface BoxInterface {
   status: string; // Status of the box
   route: number; // Route number
   step: number; // Step of the route
-  id: number;
+  id: string;
 }
 
 export default BoxInterface;

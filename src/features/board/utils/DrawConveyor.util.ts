@@ -8,8 +8,7 @@ const DrawConveyor = (
   // Draw each Conveyor of the circuit
   localConveyors.forEach((section) => {
     ctx.fillStyle = section.color;
-    // To do: Validate this function
-    // ctx.fillRect(section.x, section.y, section.width, section.height);
+
     DrawRoundedRect(
       ctx,
       section.x,

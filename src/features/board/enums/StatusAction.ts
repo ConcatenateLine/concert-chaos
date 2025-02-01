@@ -5,6 +5,7 @@ enum StatusAction {
   RESET = "Reset",
   NONE = "None",
   REMOVE = "Remove",
+  COLLISION = "Collision",
 }
 
 export default StatusAction;

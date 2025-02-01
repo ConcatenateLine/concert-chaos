@@ -5,7 +5,8 @@ const BoxColors = [
   "#e3e724c2",
   "#d924e7c2",
   "#e77724c2",
-"#77e724c2",
+  "#77e724c2",
+  "#24e7e7c2",
 ];
 
 export default BoxColors;

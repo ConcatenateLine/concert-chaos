@@ -57,7 +57,10 @@ const MenuPackingStationComponent = ({
             Remove
           </button>
         )}
-        <span style={{ backgroundColor: packingStation.color }}>
+        <span
+          className="rounded-s-md px-1"
+          style={{ backgroundColor: packingStation.color }}
+        >
           No. {packingStation.id}
         </span>
       </div>

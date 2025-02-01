@@ -1,20 +1,32 @@
+import { useState } from "react";
+
 interface MenuModalGameProps {
   isOpen: boolean;
-  onClose: () => void;
-  delivered: number;
-  blocked: number;
+  onClose: (reasonForFire: string) => void;
+  boxesDelivered: number;
+  boxesBlocked: number;
+  boxesCollisions: number;
   level: number;
+  reasonForFire?: string;
 }
 
 const MenuModalGameComponent = ({
   isOpen,
   onClose,
-  delivered = 0,
-  blocked = 0,
+  boxesDelivered = 0,
+  boxesBlocked = 0,
+  boxesCollisions = 0,
   level = 0,
+  reasonForFire = "You have been fired for no reason",
 }: MenuModalGameProps) => {
+  const [username, setUsername] = useState("");
+
   const handleContinue = () => {
-    onClose();
+    if (!username || username.trim() === "") {
+      onClose("Guest" + new Date().toUTCString());
+    } else {
+      onClose(username);
+    }
   };
 
   return (
@@ -70,11 +82,22 @@ const MenuModalGameComponent = ({
                   <div className="mt-2">
                     <p className="text-2xl">
                       Has delivered{" "}
-                      <span className="text-8xl">{delivered}</span> boxes, but
-                      something went wrong.<br></br>
+                      <span className="text-8xl">{boxesDelivered}</span> boxes,
+                      but something went wrong.<br></br>
+                      <input
+                        type="text"
+                        className="border bg-background my-4 p-2"
+                        placeholder="Username"
+                        value={username}
+                        onChange={(e) => {
+                          if (e.target.value.length <= 50)
+                            setUsername(e.target.value);
+                        }}
+                      />
                       <br></br>{" "}
                       <span className="text-2xl text-red-500">
-                        You have been fired
+                        You have been fired<br></br>
+                        <span className="text-sm"> {reasonForFire}</span>
                       </span>
                       .<br></br>
                       <br></br>

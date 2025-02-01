@@ -11,10 +11,10 @@ const MenuBoxStatusComponent = ({
 }: BoxProps) => {
   return (
     <div
-      className={`flex flex-col p-1 border items-center justify-center text-2xl text-white ${className}`}
+      className={`flex flex-col p-1 border items-center justify-start text-sm text-white ${className}`}
       style={{ backgroundColor: color }}
     >
-      <span className="p-1 text-white">{count}</span>
+      <span className="text-white">{count}</span>
     </div>
   );
 };

@@ -58,7 +58,7 @@ const MenuDropDownComponent = ({
       >
         Scores
       </button>
-      {isAuthenticated ? (
+      {/* {isAuthenticated ? (
         <button
           className=" w-full hover:bg-gray-200 rounded-lg block px-4 py-2 text-center text-sm text-gray-700"
           aria-label="Sign out"
@@ -74,7 +74,7 @@ const MenuDropDownComponent = ({
         >
           Sign in
         </button>
-      )}
+      )} */}
     </div>
   );
 };
