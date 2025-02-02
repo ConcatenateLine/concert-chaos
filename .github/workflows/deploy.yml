@@ -1,0 +1,34 @@
+name: Deploy to GitHub Pages
+
+on: # Run the workflow only when a push to the 'main' branch is detected
+  push:
+    branches:
+      - main # Branch to deploy 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # Run on the latest Ubuntu version
+
+    steps:
+      # Checkout the repository code (Allows the workflow to access all files in the repository)
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Install Bun as a dependency manager
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build the app
+        run: bun run build
+
+      # Deploy to GitHub Pages using actions-gh-pages
+      # Only the contents of this dir are pushed to GitHub Pages branch, gh-pages by default.
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist # './dist ' for React

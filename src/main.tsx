@@ -21,6 +21,7 @@ createRoot(document.getElementById("concertChaos")!).render(
               <Route path="dashboard" element={<DashboardContainer />} />
               <Route path="about" element={<AboutContainer />} />
               <Route path="scores" element={<ScoresContainer />} />
+              <Route path="*" element={<AuthContainer />} />
             </Route>
           </Routes>
         </BrowserRouter>
