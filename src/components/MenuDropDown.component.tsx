@@ -11,33 +11,45 @@ interface MenuDropDownProps {
 const MenuDropDownComponent = ({
   isOpen,
   toggleMenu,
-  logout,
-  login,
-  isAuthenticated,
-}: MenuDropDownProps) => {
+}: // logout,
+// login,
+// isAuthenticated,
+MenuDropDownProps) => {
   const navigate = useNavigate();
 
-  const signIn = async () => {
-    try {
-      toggleMenu();
-      await login("Casper");
-    } catch (error) {
-      console.error("Login failed", error);
-    }
-  };
+  // const signIn = async () => {
+  //   try {
+  //     toggleMenu();
+  //     await login("Casper");
+  //   } catch (error) {
+  //     console.error("Login failed", error);
+  //   }
+  // };
 
-  const signOut = async () => {
-    try {
-      toggleMenu();
-      await logout();
-    } catch (error) {
-      console.error("Logout failed", error);
-    }
-  };
+  // const signOut = async () => {
+  //   try {
+  //     toggleMenu();
+  //     await logout();
+  //   } catch (error) {
+  //     console.error("Logout failed", error);
+  //   }
+  // };
 
   const goToScores = () => {
     toggleMenu();
     navigate("/scores");
+  };
+  const goToDashboard = () => {
+    toggleMenu();
+    navigate("/dashboard");
+  };
+  const goToAbout = () => {
+    toggleMenu();
+    navigate("/about");
+  };
+  const goToHome = () => {
+    toggleMenu();
+    navigate("/");
   };
 
   return (
@@ -52,11 +64,32 @@ const MenuDropDownComponent = ({
       aria-labelledby="user-menu-button"
     >
       <button
+        className="md:hidden w-full hover:bg-gray-200 rounded-lg block px-4 py-2 text-sm text-gray-700"
+        aria-label="Scores"
+        onClick={goToHome}
+      >
+        Home
+      </button>
+      <button
+        className="md:hidden w-full hover:bg-gray-200 rounded-lg block px-4 py-2 text-sm text-gray-700"
+        aria-label="Scores"
+        onClick={goToDashboard}
+      >
+        Dashboard
+      </button>
+      <button
         className="w-full hover:bg-gray-200 rounded-lg block px-4 py-2 text-sm text-gray-700"
         aria-label="Scores"
         onClick={goToScores}
       >
         Scores
+      </button>
+      <button
+        className="md:hidden w-full hover:bg-gray-200 rounded-lg block px-4 py-2 text-sm text-gray-700"
+        aria-label="Scores"
+        onClick={goToAbout}
+      >
+        About
       </button>
       {/* {isAuthenticated ? (
         <button

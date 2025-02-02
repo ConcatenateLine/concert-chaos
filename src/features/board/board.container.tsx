@@ -3,7 +3,7 @@ import BoxInterface from "../box/interfaces/Box.interface";
 import PackingStationInterface from "../packingStation/interfaces/PackingStation.interface";
 import ConveyorInterface from "../Conveyor/interfaces/Conveyor.interface";
 import RouteInterface from "../Conveyor/interfaces/Route.interface";
-import ManhattanDistance from "../dashboard/utils/ManhattanDistance.util";
+import ManhattanDistance from "./utils/ManhattanDistance.util";
 import DrawBox from "./utils/DrawBox.util";
 import DrawConveyor from "./utils/DrawConveyor.util";
 import DrawRoute from "./utils/DrawRoute.util";
@@ -22,12 +22,9 @@ interface BoadContainerProps {
   routes: RouteInterface[];
   lastTime: number;
   currentTime: number;
-  updateBoxes: (newBoxes: BoxInterface[]) => void;
   addBox: (box: BoxInterface) => void;
-  updateBox: (box: BoxInterface) => void;
   updateBoxesDelivered: (box: BoxInterface) => void;
   updateBoxesCollisions: (newBlocked: BoxInterface) => void;
-  updateLevel: () => void;
   updateRoutes: (newRoutes: RouteInterface[]) => void;
   updateLastTime: (number: number) => void;
   updateBoard: boolean;
@@ -40,12 +37,9 @@ const BoardContainer = ({
   routes,
   lastTime,
   currentTime,
-  updateBoxes,
   addBox,
-  updateBox,
   updateBoxesDelivered,
   updateBoxesCollisions,
-  updateLevel,
   updateRoutes,
   updateLastTime,
   updateBoard,

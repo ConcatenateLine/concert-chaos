@@ -18,13 +18,9 @@ const DashboardContainer = () => {
     routes,
     updateBoxesDelivered,
     updateBoxesCollisions,
-    updateBoxesBlocked,
-    updateLevel,
     updateRoutes,
     // Box state update
-    updateBoxes,
     addBox,
-    updateBox,
     // Packing Station state update
     updatePackingStationSpeed,
     updatePackingStationStatus,
@@ -59,7 +55,7 @@ const DashboardContainer = () => {
         <MenuScoreComponent title="Level" count={level} />
         <MenuScoreComponent title="Collisions" count={boxesCollisions} />
       </div>
-      <div className="w-full h-4/5 flex justify-center">
+      <div className="w-full h-[50%] lg:h-[70%] md:flex justify-center contents">
         <BoardContainer
           conveyors={conveyors}
           boxes={boxes}
@@ -67,29 +63,27 @@ const DashboardContainer = () => {
           routes={routes}
           lastTime={lastTime}
           currentTime={currentTime}
-          updateBoxes={updateBoxes}
           addBox={addBox}
-          updateBox={updateBox}
           updateBoxesDelivered={updateBoxesDelivered}
           updateBoxesCollisions={updateBoxesCollisions}
-          updateLevel={updateLevel}
           updateRoutes={updateRoutes}
           updateLastTime={updateLastTime}
           updateBoard={updateBoard}
         />
       </div>
-      <div className="fixed pl-60 bottom-16 w-full h-36 gap-4 flex">
-        <div className="border w-[49%]  p-1 grid lg:grid-cols-3 gap-2 overflow-y-auto">
+      <div className="fixed top-26 left-10 bottom-16 right-10 h-36  gap-4 flex justify-between">
+        <div className="hidden md:block md:w-[17%]"></div>
+        <div className="border md:w-[47%]  p-1 grid lg:grid-cols-3 gap-2 overflow-y-auto">
           {packingStations.map((packingStation) => (
             <MenuPackingStationComponent
-              key={packingStation.id}
+              key={"ps" + packingStation.id}
               packingStation={packingStation}
               updateSpeed={updatePackingStationSpeed}
               updateStatus={updatePackingStationStatus}
             />
           ))}
         </div>
-        <div className="lg:flex border w-[36%] p-1 gap-2 overflow-y-auto">
+        <div className="lg:flex border w-[35%] p-1 gap-2 overflow-y-auto">
           <div className="lg:w-1/5 grid grid-cols-2 gap-2">
             <MenuRoutesSummaryComponent routes={routes} />
           </div>
@@ -97,7 +91,7 @@ const DashboardContainer = () => {
           <div className="lg:w-4/5 grid lg:grid-cols-5 gap-2 overflow-y-auto">
             {boxes.map((box) => (
               <MenuBoxComponent
-                key={`${box.id} ${box.platformOrigin}`}
+                key={`b${box.id} ${box.platformOrigin}`}
                 box={box}
               />
             ))}

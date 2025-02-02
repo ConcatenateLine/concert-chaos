@@ -14,9 +14,6 @@ const MenuModalGameComponent = ({
   isOpen,
   onClose,
   boxesDelivered = 0,
-  boxesBlocked = 0,
-  boxesCollisions = 0,
-  level = 0,
   reasonForFire = "You have been fired for no reason",
 }: MenuModalGameProps) => {
   const [username, setUsername] = useState("");
@@ -56,7 +53,7 @@ const MenuModalGameComponent = ({
                 : "opacity-0 -translate-y-2 hidden "
             }`}
           >
-            <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 text-white">
+            <div className="md:px-4 pt-5 pb-4 sm:p-6 sm:pb-4 text-white">
               <div className="sm:flex sm:items-start">
                 <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
                   <svg
@@ -76,14 +73,16 @@ const MenuModalGameComponent = ({
                   </svg>
                 </div>
                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                  <h3 className="text-4xl" id="modal-title">
+                  <h3 className="md:text-4xl" id="modal-title">
                     Game over
                   </h3>
                   <div className="mt-2">
-                    <p className="text-2xl">
+                    <p className="md:text-2xl">
                       Has delivered{" "}
-                      <span className="text-8xl">{boxesDelivered}</span> boxes,
-                      but something went wrong.<br></br>
+                      <span className="text-2xl md:text-8xl">
+                        {boxesDelivered}
+                      </span>{" "}
+                      boxes, but something went wrong.<br></br>
                       <input
                         type="text"
                         className="border bg-background my-4 p-2"
@@ -95,7 +94,7 @@ const MenuModalGameComponent = ({
                         }}
                       />
                       <br></br>{" "}
-                      <span className="text-2xl text-red-500">
+                      <span className="md:text-2xl text-red-500">
                         You have been fired<br></br>
                         <span className="text-sm"> {reasonForFire}</span>
                       </span>

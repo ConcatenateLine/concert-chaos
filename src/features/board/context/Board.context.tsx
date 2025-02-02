@@ -20,6 +20,7 @@ export const BoardContext = createContext<BoardContextInterface | undefined>(
 export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
   const maxBoxesCollisions = 50;
   const maxBoxesBlocked = 10;
+  const levelBoxScore = 80;
 
   const [boardState, setBoardState] = useState<BoardStateInterface>({
     boxesDelivered: 0,
@@ -116,13 +117,15 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
   const addBox = (box: BoxInterface) => {
     if (boxIds.has(box.id)) {
       // Box have been blocked because it's already present in the board (Id box is already present)
-      updateBoxesBlocked(box);
+      updateBoxesBlocked();
     } else {
       setBoxIds((prev) => new Set(prev).add(box.id));
       setBoxes((prev) => [...prev, box]);
     }
 
-    isGameOver();
+    if (boardState.gameOver) {
+      isGameOver();
+    }
   };
 
   const updateBox = (box: BoxInterface) => {
@@ -144,12 +147,12 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
       boxesDelivered: boardState.boxesDelivered + 1,
     }));
 
-    if (boardState.boxesDelivered >= boardState.level * 100) {
+    if (boardState.boxesDelivered >= boardState.level * levelBoxScore) {
       updateLevel();
     }
   };
 
-  const updateBoxesBlocked = (box: BoxInterface) => {
+  const updateBoxesBlocked = () => {
     setBoardState((prev) => ({
       ...prev,
       boxesBlocked: prev.boxesBlocked + 1,
@@ -266,6 +269,9 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const initializeLevel = async (levelIndex: number) => {
+    if (levelIndex < 1) {
+      return;
+    }
     const levelData = await getLevelData(levelIndex); // Await the promise
     setPackingStations((prev) => [...prev, ...levelData.packingStations]);
     setConveyors((prev) => [...prev, ...levelData.conveyors]);
@@ -293,15 +299,13 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
         }))
       );
       setBoxIds(new Set());
-      // TODO: reset routes
-      // setConveyors([]);
-      // setRoutes([]);
-
       setLocalStorage();
     }
   };
 
-  const resetBoard = (user: string = "Guest" + new Date().toUTCString()) => {
+  const resetBoard = async (
+    user: string = "Guest" + new Date().toUTCString()
+  ) => {
     setBoardState((prev) => ({
       ...prev,
       boxesDelivered: 0,
@@ -314,6 +318,15 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
       reasonForFire: "You have been fired for no reason",
     }));
     setLocalStorage(user, true);
+
+    const levelData = await getLevelData(0);
+
+    if (!levelData) return;
+    setPackingStations(() => levelData.packingStations);
+    setConveyors(() => levelData.conveyors);
+    setRoutes(() => levelData.routes);
+
+    setUpdateBoard((prev) => !prev);
   };
 
   const setLocalStorage = (
@@ -321,6 +334,9 @@ export const BoardProvider = ({ children }: { children: React.ReactNode }) => {
     changeName: boolean = false
   ) => {
     if (changeName || scores.length >= 9) scores.pop();
+
+    console.log("changeName", changeName);
+    console.log("scores", scores);
 
     scores.push({
       score: boardState.boxesDelivered,

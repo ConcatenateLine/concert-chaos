@@ -12,6 +12,12 @@ module.exports = {
     tailwindcss: {},
     autoprefixer: {},
     // optimize for production
-    // ...(process.env.NODE_ENV === "production" ? { cssnano: {} } : {}),
+    ...(process.env.NODE_ENV === "production" ? { cssnano: {
+      preset: ["default", {
+        discardComments: {
+          removeAll: true,
+        },
+      }],
+    } } : {}),
   },
 };

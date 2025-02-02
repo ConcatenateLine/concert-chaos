@@ -5,9 +5,70 @@ import LevelData from "../interfaces/Levels.interface";
 
 const levelsData: LevelData[] = [
   {
-    packingStations: [],
-    conveyors: [],
-    routes: [],
+    packingStations: [
+      {
+        x: 50,
+        y: 400,
+        width: 60,
+        height: 100,
+        color: BoxColors[0],
+        speed: 1,
+        status: "Stop",
+        id: 1,
+      },
+      {
+        x: 750,
+        y: 400,
+        width: 60,
+        height: 100,
+        color: BoxColors[1],
+        speed: 1,
+        status: "Stop",
+        id: 2,
+      },
+      {
+        x: 350,
+        y: 0,
+        width: 60,
+        height: 100,
+        color: BoxColors[2],
+        speed: 1,
+        status: "Stop",
+        id: 3,
+      },
+      {
+        x: 350,
+        y: 540,
+        width: 100,
+        height: 60,
+        color: BoxColors[3],
+        speed: 1,
+        status: "Stop",
+        id: 4,
+      },
+    ],
+    conveyors: [
+      { x: 350, y: 400, width: 100, height: 200, color: ConveyorColors[0] },
+      { x: 650, y: 0, width: 100, height: 600, color: ConveyorColors[0] },
+      { x: 50, y: 400, width: 760, height: 100, color: ConveyorColors[0] },
+      { x: 350, y: 0, width: 400, height: 100, color: ConveyorColors[0] },
+    ],
+    routes: [
+      {
+        id: 0,
+        start: 1,
+        end: 3,
+        color: BoxColors[0],
+        path: [],
+      },
+      {
+        id: 1,
+        start: 2,
+        end: 4,
+        color: BoxColors[1],
+        path: [],
+      },
+    ],
   },
   {
     packingStations: [],

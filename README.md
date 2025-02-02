@@ -43,41 +43,6 @@ Game platform focused on transporting packages across road sections. The primary
 
 This game platform challenges users to strategically manage package transportation across road sections. By configuring the interval time and ensuring roads are not blocked, users can maximize their scores and achieve the game's objectives.
 
-## Project Structure
-
-The project is structured in the following folders:
-
-src/
-├── App.tsx
-├── assets/
-│ └── react.svg
-├── components/
-│ ├── Footer.container.tsx
-│ ├── Header.container.tsx
-│ └── Sidebar.component.tsx
-├── features/
-│ ├── TransportationBand/
-│ │ └── TransportationBand.container.tsx
-│ ├── auth/
-│ │ ├── Auth.container.tsx
-│ │ ├── interfaces/ (empty)
-│ │ └── services/
-│ │ └── Auth.service.ts
-│ ├── box/
-│ │ ├── Box.container.tsx
-│ │ └── components/
-│ │ └── BoxDraw.component.tsx
-│ ├── dashboard/
-│ │ ├── Dashboard.container.tsx
-│ │ └── components/
-│ │ ├── Container.component.tsx
-│ │ └── Item.component.tsx
-│ └── platform/
-│ └── Platform.container.tsx
-├── index.css
-├── main.tsx
-└── vite-env.d.ts
-
 ## Technologies
 
 The game uses the following technologies:
@@ -99,6 +64,96 @@ The game is easy to play. The canvas is used to draw the circuit and the package
 3. Run `npm run dev` to start the project
 4. Open `http://localhost:3000` in your browser
 
-## To Do List
+## Project Structure
 
-- ...
+The project is structured in the following folders:
+
+```
+
+src/
+├── App.tsx
+├── assets/
+│   └── react.svg
+├── components/
+│   ├── Footer.container.tsx
+│   ├── Header.container.tsx
+│   ├── MenuDropDown.component.tsx
+│   ├── ProfileDropDownMenu.component.tsx
+│   └── Sidebar.component.tsx
+├── features/
+│   ├── Conveyor/
+│   │   ├── Conveyor.container.tsx
+│   │   ├── interfaces/
+│   │   │   ├── Conveyor.interface.ts
+│   │   │   └── Route.interface.ts
+│   │   └── utils/
+│   │       └── ConveyorColors.util.ts
+│   ├── about/
+│   │   ├── About.container.tsx
+│   │   └── components/
+│   │       ├── AboutSection.component.tsx
+│   │       └── AboutSectionContent.component.tsx
+│   ├── auth/
+│   │   ├── Auth.container.tsx
+│   │   ├── components/
+│   │   │   └── AuthBackgroud.component.tsx
+│   │   ├── context/
+│   │   │   └── Auth.context.tsx
+│   │   ├── hooks/
+│   │   │   └── useAuth.tsx
+│   │   ├── interfaces/
+│   │   │   └── AuthContext.interface.ts
+│   │   └── services/
+│   │       └── Auth.service.ts
+│   ├── board/
+│   │   ├── board.container.tsx
+│   │   ├── context/
+│   │   │   └── Board.context.tsx
+│   │   ├── enums/
+│   │   │   ├── SpeedOption.ts
+│   │   │   └── StatusAction.ts
+│   │   ├── hooks/
+│   │   │   └── useBoard.tsx
+│   │   ├── interfaces/
+│   │   │   ├── BoardContext.interface.ts
+│   │   │   ├── Node.interface.ts
+│   │   │   └── Square.interface.ts
+│   │   └── utils/
+│   │       ├── CheckBoxCollisions.util.ts
+│   │       ├── GridBoard.util.ts
+│   │       ├── ManhattanDistance.util.ts
+│   │       └── Draw[...].util.ts
+│   ├── box/
+│   │   ├── Box.container.tsx
+│   │   ├── interfaces/
+│   │   │   └── Box.interface.ts
+│   │   ├── models/
+│   │   │   └── Box.ts
+│   │   └── utils/
+│   │       └── BoxColors.utils.ts
+│   ├── dashboard/
+│   │   ├── Dashboard.container.tsx
+│   │   └── components/
+│   │       ├── MenuBox.component.tsx
+│   │       ├── MenuBoxStatus.component.tsx
+│   │       ├── MenuModalGame.component.tsx
+│   │       ├── MenuPackingStation.component.tsx
+│   │       ├── MenuRoutesSummary.component.tsx
+│   │       └── MenuScore.component.tsx
+│   ├── level/
+│   │   ├── interfaces/
+│   │   │   └── Levels.interface.ts
+│   │   └── utils/
+│   │       └── Levels.util.ts
+│   ├── packingStation/
+│   │   └── interfaces/
+│   │       └── PackingStation.interface.ts
+│   └── scores/
+│       ├── Scores.container.tsx
+│       └── components/
+│           └── ScoreSection.component.tsx
+├── index.css
+├── main.tsx
+└── vite-env.d.ts
+
+```

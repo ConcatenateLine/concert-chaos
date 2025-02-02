@@ -10,7 +10,7 @@ import { AuthProvider } from "./features/auth/context/Auth.context.tsx";
 import { BoardProvider } from "./features/board/context/Board.context.tsx";
 import ScoresContainer from "./features/scores/Scores.container.tsx";
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById("concertChaos")!).render(
   <StrictMode>
     <AuthProvider>
       <BoardProvider>
