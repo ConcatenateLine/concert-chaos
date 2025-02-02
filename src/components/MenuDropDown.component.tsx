@@ -37,19 +37,19 @@ MenuDropDownProps) => {
 
   const goToScores = () => {
     toggleMenu();
-    navigate("/scores");
+    navigate("./scores");
   };
   const goToDashboard = () => {
     toggleMenu();
-    navigate("/dashboard");
+    navigate("./dashboard");
   };
   const goToAbout = () => {
     toggleMenu();
-    navigate("/about");
+    navigate("./about");
   };
   const goToHome = () => {
     toggleMenu();
-    navigate("/");
+    navigate("./");
   };
 
   return (

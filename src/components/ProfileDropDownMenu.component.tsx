@@ -24,7 +24,7 @@ const ProfileDropDownMenuComponent = () => {
           <img
             className="size-10"
             alt="ConcertChaos"
-            src="/concertChaos.svg"
+            src="./concertChaos.svg"
           />
         </button>
         <MenuDropDownComponent
