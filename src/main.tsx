@@ -14,9 +14,9 @@ createRoot(document.getElementById("concertChaos")!).render(
   <StrictMode>
     <AuthProvider>
       <BoardProvider>
-        <BrowserRouter>
+        <BrowserRouter basename="/concert-chaos">
           <Routes>
-            <Route path="/" element={<App />}>
+            <Route  path="/" element={<App />}>
               <Route index element={<AuthContainer />} />
               <Route path="dashboard" element={<DashboardContainer />} />
               <Route path="about" element={<AboutContainer />} />
